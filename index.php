@@ -1,6 +1,10 @@
 <?php 
+
+    //connecting to the database
     require_once('db_con.php');
 
+
+    //resetting the states of all appointments to 0
     if(isset($_POST['submit0'])) {
 
         $sql = 'UPDATE user SET state = 0';
@@ -11,12 +15,11 @@
         }
     }
 
+    //creating function to send text reminders
     function SendSms($msisdn, $message, $from) {
         $username = 'cphsf124';
         $apikey = '80ba815b-6962-484a-b369-7fb59bac43af';
         $basicauth = base64_encode($username.':'.$apikey);
-
-        //$url = 'https://'.$username.':'.$apikey.'@api.cpsms.dk/v2/simplesend/'.$msisdn.'/'.urlencode($message).'/'.urlencode($from);
 
         $url = 'https://api.cpsms.dk/v2/simplesend/'.$msisdn.'/'.urlencode($message).'/'.urlencode($from);
 
@@ -50,6 +53,7 @@
     <body>
         <?php 
 
+            //pulling all users from the database and listing them on the site
             $sql = 'SELECT * FROM user';
             $stmt = $con->prepare($sql);
             $stmt->execute();
@@ -67,12 +71,16 @@
 
             echo "<hr>";
 
+            //running an if on the check appointments button
             if(isset($_POST['submit-check'])) {
 
-                $sql = 'SELECT * FROM user WHERE state = 0 AND date < NOW() + INTERVAL 4 DAY';
+                //checking for users at state = 0 with less than a month to their appointment 
+                $sql = 'SELECT * FROM user WHERE state = 0 AND date < NOW() + INTERVAL 4 DAY'; //note that this should be 30 and not 4 days
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
+                //binding the results to variables that makes sense name wise
                 $stmt->bind_result($id, $name, $email, $phone, $state, $date);
+                //storing the statement results
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
@@ -84,6 +92,7 @@
                     echo $date."<br>";
                     echo "<br>";
 
+                    //updating the state to 1 of the user with mactching id 
                     $sql1 = 'UPDATE user SET state = 1 WHERE user_id = ?';
                     $stmt1 = $con->prepare($sql1);
                     $stmt1->bind_param('i', $id);
@@ -92,14 +101,18 @@
                             echo '<br>1 måned til tandlægetid, men i dette trin sker der ikke noget<br><br><br><hr>';
                         }
                 }
+                //clearing the statement results
                 $stmt->free_result();
 
 /*-----------------------------------------------------------------------------------------------------------------------------*/
 
-                $sql = 'SELECT * FROM user WHERE state = 1 AND date < NOW() + INTERVAL 4 DAY';
+                //checking for users at state = 1 with less than a month to their appointment 
+                $sql = 'SELECT * FROM user WHERE state = 1 AND date < NOW() + INTERVAL 4 DAY'; //note that this should be 30 and not 4 days
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
+                //binding the results to variables that makes sense name wise
                 $stmt->bind_result($id, $name, $email, $phone, $state, $date);
+                //storing the statement results
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
@@ -111,6 +124,7 @@
                     echo $date."<br>";
                     echo "<br>";
 
+                    //running the mail form and sending it to the person whos contact information is saved in the variables above
                     $to = $email;
                     $subject = "My subject";
                     $txt = "Hi " . $name . " remember your dentist appointment at " . $date;
@@ -120,6 +134,7 @@
 
                     echo 'Sending mail to '.$email;
 
+                    //updating the state of the user from 1 to 2 of the users who has recieved a mail
                     $sql1 = 'UPDATE user SET state = 2 WHERE user_id = ?';
                     $stmt1 = $con->prepare($sql1);
                     $stmt1->bind_param('i', $id);
@@ -128,14 +143,17 @@
                             echo '<br>Du skal til tandlægen om 1 måned! Så her får du en mail som bekræftigelse<br><br><br><hr>';
                         }
                 }
+                //clearing the statement results
                 $stmt->free_result();
 
 /*-----------------------------------------------------------------------------------------------------------------------------*/              
 
+                //checking for users at state = 2 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 2 AND date < NOW() + INTERVAL 1 DAY';
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
                 $stmt->bind_result($id, $name, $email, $phone, $state, $date);
+                //storing the statement results
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
@@ -147,6 +165,7 @@
                     echo $date."<br>";
                     echo "<br>";
 
+                    //updating their state to 3
                     $sql1 = 'UPDATE user SET state = 3 WHERE user_id = ?';
                     $stmt1 = $con->prepare($sql1);
                     $stmt1->bind_param('i', $id);
@@ -155,14 +174,17 @@
                         echo '<br>Du skal til tandlægen om 1 dag, men i dette trin sker der ikke noget<br><br><br><hr>';
                     }
                 }
+                //clearing the statement results
                 $stmt->free_result();   
 
 /*-----------------------------------------------------------------------------------------------------------------------------*/
 
+                //checking for users at state = 3 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 3 AND date < NOW() + INTERVAL 1 DAY';
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
                 $stmt->bind_result($id, $name, $email, $phone, $state, $date);
+                //storing the statement results
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
@@ -175,50 +197,17 @@
                     echo "<br>";
 
 
-                    /*$username = 'cphsf124';
-                    $apikey = '80ba815b-6962-484a-b369-7fb59bac43af';
-
-                    $to = '4527142975'; // msisdn: 4511223344
-                    $from = 'Dentist'; // from: Den
-                    $message = 'Remember your appointment tomorrow mofo';
-
-                    $url = 'https://'.$username.':'.$apikey.'@api.cpsms.dk/v2/simplesend/'.$to.'/'.urlencode($message).'/'.urlencode($from);
-                    echo "gw: ".$url;*/
-
-
-
-
-
-                    $msisdn = '4527142975'; // msisdn: 4511223344
-                    $message = 'Husk at du skal til tandlægen den ' . $date . "Mvh Toothbook";
+                    //saving the contact information of the user in variables
+                    $msisdn = '45'. $phone; // msisdn: 4511223344
+                    $message = 'Hej ' . $name . ' husk at du skal til tandlægen den ' . $date . " Mvh Toothbook";
                     $from = 'Toothbook'; // from: Den
                     
-                    SendSms($msisdn, $message, $from);
 
+                    //calling the function from the top of the code, to send the actual message
+                    //NOTE!! THIS FUNCTION SHOULD ALWAYS BE COMMENTED OUT WHEN TESTING!! -- unless testing the actual text message
+                    //SendSms($msisdn, $message, $from);
 
-
-                    /*$curl = curl_init();
-
-                    curl_setopt_array($curl, array(
-                    CURLOPT_URL => $file,  
-                    CURLOPT_CUSTOMREQUEST => "GET",
-                    CURLOPT_RETURNTRANSFER => true,  
-                    ));
-
-                    $response = curl_exec($curl);
-                    $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-
-                    curl_close($curl);
-
-                    if($httpCode == 200) {
-                        echo 'OK: ' . $response;
-                    } else {
-
-                        echo 'Read response message for details: ' . $response;
-                    }*/
-
-
-
+                    //updating their state to 4 after sending the text message
                     $sql1 = 'UPDATE user SET state = 4 WHERE user_id = ?';
                     $stmt1 = $con->prepare($sql1);
                     $stmt1->bind_param('i', $id);
@@ -227,6 +216,7 @@
                         echo '<br>Du skal til tandlægen om 1 dag! Så her får du en sms som bekræftigelse<br><br><br><hr>';
                     }
                 }
+                //clearing the statement results
                 $stmt->free_result();
 
             } 

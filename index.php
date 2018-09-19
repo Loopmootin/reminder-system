@@ -48,34 +48,54 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4" crossorigin="anonymous"></script>
+
         <title>Reminder system</title>
     </head>
     <body>
-        <?php 
+        <header>
+            <h1>Toothbook</h1>
+        </header>
+        <article>
+        <h4 class="center"><img class="step-img" src="tooth.svg" alt="">All users in the database:</h4>
+        <div class="users center-box">
+            <?php 
 
-            //pulling all users from the database and listing them on the site
-            $sql = 'SELECT * FROM user';
-            $stmt = $con->prepare($sql);
-            $stmt->execute();
-            $stmt->bind_result($id, $name, $email, $phone, $state, $date);
+                //pulling all users from the database and listing them on the site
+                $sql = 'SELECT * FROM user';
+                $stmt = $con->prepare($sql);
+                $stmt->execute();
+                $stmt->bind_result($id, $name, $email, $phone, $state, $date);
 
-            while($stmt->fetch()) {
-                echo $id."<br>";
-                echo $name."<br>";
-                echo $email."<br>";
-                echo $phone."<br>";
-                echo $state."<br>";
-                echo $date."<br>";
-                echo "<br>";
-            }
+                while($stmt->fetch()) {
+                    echo '<div class="user-box">';
+                    echo    "ID: " . $id."<br>";
+                    echo    "Name: " . $name."<br>";
+                    echo    "Email: " . $email."<br>";
+                    echo    "Phone: " . $phone."<br>";
+                    echo    "State: " . $state."<br>";
+                    echo    "Date: " . $date."<br>";
+                    echo "</div>";
+                    echo "<br>";
+                }
+            ?>
+        </div>
+<hr>
 
-            echo "<hr>";
-
+        <?php
             //running an if on the check appointments button
             if(isset($_POST['submit-check'])) {
+echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 0 in the database:</h4>';
+            echo '<div class="users">';
 
                 //checking for users at state = 0 with less than a month to their appointment 
-                $sql = 'SELECT * FROM user WHERE state = 0 AND date < NOW() + INTERVAL 4 DAY'; //note that this should be 30 and not 4 days
+                $sql = 'SELECT * FROM user WHERE state = 0 AND date < NOW() + INTERVAL 30 DAY'; //note that this should be 30 and not 4 days
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
                 //binding the results to variables that makes sense name wise
@@ -84,12 +104,14 @@
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
-                    echo $id."<br>";
-                    echo $name."<br>";
-                    echo $email."<br>";
-                    echo $phone."<br>";
-                    echo $state."<br>";
-                    echo $date."<br>";
+                    echo '<div class="user-box">';
+                    echo    "ID: " . $id."<br>";
+                    echo    "Name: " . $name."<br>";
+                    echo    "Email: " . $email."<br>";
+                    echo    "Phone: " . $phone."<br>";
+                    echo    "State: " . $state."<br>";
+                    echo    "Date: " . $date."<br>";
+                    echo "</div>";
                     echo "<br>";
 
                     //updating the state to 1 of the user with mactching id 
@@ -98,16 +120,18 @@
                     $stmt1->bind_param('i', $id);
                     $stmt1->execute();
                     if ($stmt1->affected_rows > 0){
-                            echo '<br>1 måned til tandlægetid, men i dette trin sker der ikke noget<br><br><br><hr>';
+                            //echo '<br>1 måned til tandlægetid, men i dette trin sker der ikke noget<br><br><br><hr>';
                         }
                 }
                 //clearing the statement results
                 $stmt->free_result();
-
+            echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/
-
+echo '<hr>';
+echo '<h4 class="center"><img class="step-img" src="mail.svg" alt="">All users at stage 1 in the database:</h4>';
+            echo '<div class="users">';
                 //checking for users at state = 1 with less than a month to their appointment 
-                $sql = 'SELECT * FROM user WHERE state = 1 AND date < NOW() + INTERVAL 4 DAY'; //note that this should be 30 and not 4 days
+                $sql = 'SELECT * FROM user WHERE state = 1 AND date < NOW() + INTERVAL 30 DAY'; //note that this should be 30 and not 4 days
                 $stmt = $con->prepare($sql);
                 $stmt->execute();
                 //binding the results to variables that makes sense name wise
@@ -116,12 +140,14 @@
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
-                    echo $id."<br>";
-                    echo $name."<br>";
-                    echo $email."<br>";
-                    echo $phone."<br>";
-                    echo $state."<br>";
-                    echo $date."<br>";
+                    echo '<div class="user-box">';
+                    echo    "ID: " . $id."<br>";
+                    echo    "Name: " . $name."<br>";
+                    echo    "Email: " . $email."<br>";
+                    echo    "Phone: " . $phone."<br>";
+                    echo    "State: " . $state."<br>";
+                    echo    "Date: " . $date."<br>";
+                    echo "</div>";
                     echo "<br>";
 
                     //running the mail form and sending it to the person whos contact information is saved in the variables above
@@ -132,7 +158,7 @@
 
                     mail($to,$subject,$txt,$headers);
 
-                    echo 'Sending mail to '.$email;
+                    //echo 'Sending mail to '.$email;
 
                     //updating the state of the user from 1 to 2 of the users who has recieved a mail
                     $sql1 = 'UPDATE user SET state = 2 WHERE user_id = ?';
@@ -140,14 +166,16 @@
                     $stmt1->bind_param('i', $id);
                     $stmt1->execute();
                     if ($stmt1->affected_rows > 0){
-                            echo '<br>Du skal til tandlægen om 1 måned! Så her får du en mail som bekræftigelse<br><br><br><hr>';
+                            //echo '<br>Du skal til tandlægen om 1 måned! Så her får du en mail som bekræftigelse<br><br><br><hr>';
                         }
                 }
                 //clearing the statement results
                 $stmt->free_result();
-
+            echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/              
-
+echo '<hr>';
+echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 2 in the database:</h4>';
+            echo '<div class="users">';
                 //checking for users at state = 2 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 2 AND date < NOW() + INTERVAL 1 DAY';
                 $stmt = $con->prepare($sql);
@@ -157,12 +185,14 @@
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
-                    echo $id."<br>";
-                    echo $name."<br>";
-                    echo $email."<br>";
-                    echo $phone."<br>";
-                    echo $state."<br>";
-                    echo $date."<br>";
+                    echo '<div class="user-box">';
+                    echo    "ID: " . $id."<br>";
+                    echo    "Name: " . $name."<br>";
+                    echo    "Email: " . $email."<br>";
+                    echo    "Phone: " . $phone."<br>";
+                    echo    "State: " . $state."<br>";
+                    echo    "Date: " . $date."<br>";
+                    echo "</div>";
                     echo "<br>";
 
                     //updating their state to 3
@@ -171,14 +201,16 @@
                     $stmt1->bind_param('i', $id);
                     $stmt1->execute();
                     if ($stmt1->affected_rows > 0){
-                        echo '<br>Du skal til tandlægen om 1 dag, men i dette trin sker der ikke noget<br><br><br><hr>';
+                        //echo '<br>Du skal til tandlægen om 1 dag, men i dette trin sker der ikke noget<br><br><br><hr>';
                     }
                 }
                 //clearing the statement results
                 $stmt->free_result();   
-
+            echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/
-
+echo '<hr>';
+echo '<h4 class="center"><img class="step-img" src="phone.svg" alt="">All users at stage 3 in the database:</h4>';
+            echo '<div class="users">';
                 //checking for users at state = 3 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 3 AND date < NOW() + INTERVAL 1 DAY';
                 $stmt = $con->prepare($sql);
@@ -188,12 +220,14 @@
                 $stmt->store_result();
 
                 while($stmt->fetch()) {
-                    echo $id."<br>";
-                    echo $name."<br>";
-                    echo $email."<br>";
-                    echo $phone."<br>";
-                    echo $state."<br>";
-                    echo $date."<br>";
+                    echo '<div class="user-box">';
+                    echo    "ID: " . $id."<br>";
+                    echo    "Name: " . $name."<br>";
+                    echo    "Email: " . $email."<br>";
+                    echo    "Phone: " . $phone."<br>";
+                    echo    "State: " . $state."<br>";
+                    echo    "Date: " . $date."<br>";
+                    echo "</div>";
                     echo "<br>";
 
 
@@ -213,22 +247,26 @@
                     $stmt1->bind_param('i', $id);
                     $stmt1->execute();
                     if ($stmt1->affected_rows > 0){
-                        echo '<br>Du skal til tandlægen om 1 dag! Så her får du en sms som bekræftigelse<br><br><br><hr>';
+                        //echo '<br>Du skal til tandlægen om 1 dag! Så her får du en sms som bekræftigelse<br><br><br><hr>';
                     }
                 }
                 //clearing the statement results
                 $stmt->free_result();
-
+            echo '</div>';
             } 
         ?>
-
-        <form action="#" method="post">
-            <input type="submit" name="submit-check" value="Check for appointments">
+<hr>
+        <form class="center" action="#" method="post">
+            <input class="btn" type="submit" name="submit-check" value="Check for appointments">
         </form>
 
-        <form action="#" method="post">
-            <input type="submit" name="submit0" value="State 0">
+        <br>
+
+        <form class="center" action="#" method="post">
+            <input class="btn" type="submit" name="submit0" value="State 0">
         </form>
+
+        </article>
         
     </body>
 </html>

@@ -17,8 +17,8 @@
 
     //creating function to send text reminders
     function SendSms($msisdn, $message, $from) {
-        $username = 'cphsf124';
-        $apikey = '80ba815b-6962-484a-b369-7fb59bac43af';
+        $username = '';
+        $apikey = '';
         $basicauth = base64_encode($username.':'.$apikey);
 
         $url = 'https://api.cpsms.dk/v2/simplesend/'.$msisdn.'/'.urlencode($message).'/'.urlencode($from);
@@ -86,13 +86,13 @@
                 }
             ?>
         </div>
-<hr>
+        <hr>
 
         <?php
             //running an if on the check appointments button
             if(isset($_POST['submit-check'])) {
-echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 0 in the database:</h4>';
-            echo '<div class="users">';
+                echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 0 in the database:</h4>';
+                echo '<div class="users">';
 
                 //checking for users at state = 0 with less than a month to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 0 AND date < NOW() + INTERVAL 30 DAY'; //note that this should be 30 and not 4 days
@@ -127,8 +127,8 @@ echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All use
                 $stmt->free_result();
             echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/
-echo '<hr>';
-echo '<h4 class="center"><img class="step-img" src="mail.svg" alt="">All users at stage 1 in the database:</h4>';
+            echo '<hr>';
+            echo '<h4 class="center"><img class="step-img" src="mail.svg" alt="">All users at stage 1 in the database:</h4>';
             echo '<div class="users">';
                 //checking for users at state = 1 with less than a month to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 1 AND date < NOW() + INTERVAL 30 DAY'; //note that this should be 30 and not 4 days
@@ -173,8 +173,8 @@ echo '<h4 class="center"><img class="step-img" src="mail.svg" alt="">All users a
                 $stmt->free_result();
             echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/              
-echo '<hr>';
-echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 2 in the database:</h4>';
+            echo '<hr>';
+            echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All users at stage 2 in the database:</h4>';
             echo '<div class="users">';
                 //checking for users at state = 2 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 2 AND date < NOW() + INTERVAL 1 DAY';
@@ -208,8 +208,8 @@ echo '<h4 class="center"><img class="step-img" src="calender.svg" alt="">All use
                 $stmt->free_result();   
             echo '</div>';
 /*-----------------------------------------------------------------------------------------------------------------------------*/
-echo '<hr>';
-echo '<h4 class="center"><img class="step-img" src="phone.svg" alt="">All users at stage 3 in the database:</h4>';
+            echo '<hr>';
+            echo '<h4 class="center"><img class="step-img" src="phone.svg" alt="">All users at stage 3 in the database:</h4>';
             echo '<div class="users">';
                 //checking for users at state = 3 with less than 1 day to their appointment 
                 $sql = 'SELECT * FROM user WHERE state = 3 AND date < NOW() + INTERVAL 1 DAY';
@@ -255,7 +255,7 @@ echo '<h4 class="center"><img class="step-img" src="phone.svg" alt="">All users 
             echo '</div>';
             } 
         ?>
-<hr>
+        <hr>
         <form class="center" action="#" method="post">
             <input class="btn" type="submit" name="submit-check" value="Check for appointments">
         </form>
